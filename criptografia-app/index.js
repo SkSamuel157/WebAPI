@@ -46,28 +46,30 @@ const decrypt = (text) => {
   return decrypted.toString();
 };
 
-// Endpoint unificado para criptografar ou descriptografar
-app.post('/api/crypt', (req, res) => {
-  const { type, message } = req.body; // 'type' define se vai criptografar ou descriptografar
-  
+// Endpoint para criptografar uma mensagem
+app.post('/api/encrypt', (req, res) => {
+  const { message } = req.body;
   if (!message) {
     return res.status(400).json({ message: 'Mensagem não fornecida.' });
   }
+  const encryptedMessage = encrypt(message);
+  res.status(200).json({ encryptedMessage });
+});
 
-  if (type === 'encrypt') {
-    const encryptedMessage = encrypt(message);
-    return res.status(200).json({ result: encryptedMessage });
-  } else if (type === 'decrypt') {
-    try {
-      const decryptedMessage = decrypt(message);
-      return res.status(200).json({ result: decryptedMessage });
-    } catch (error) {
-      return res.status(500).json({ message: 'Erro ao descriptografar a mensagem.' });
-    }
-  } else {
-    return res.status(400).json({ message: 'Tipo de operação inválido.' });
+// Endpoint para descriptografar uma mensagem
+app.post('/api/decrypt', (req, res) => {
+  const { encryptedMessage } = req.body;
+  if (!encryptedMessage) {
+    return res.status(400).json({ message: 'Mensagem criptografada não fornecida.' });
+  }
+  try {
+    const decryptedMessage = decrypt(encryptedMessage);
+    res.status(200).json({ decryptedMessage });
+  } catch (error) {
+    res.status(500).json({ message: 'Erro ao descriptografar a mensagem.' });
   }
 });
+
 
 app.listen(port, () => {
   console.log(`Servidor rodando na porta ${port}`);

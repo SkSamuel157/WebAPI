@@ -1,13 +1,11 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Criptografia de Mensagens</title>
     <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
     <div class="container">
         <h1>Criptografia de Mensagens</h1>
@@ -29,7 +27,55 @@
         </div>
     </div>
 
-    <script src="script.js"></script>
-</body>
+    <script>
+        const apiKey = '1234567890abcdef';
+        const replitURL = 'https://f4e6b1d8-3cd0-431a-89b5-ea50dbee89ef-00-zr7lx787fvg5.picard.replit.dev';
 
+        // Função para criptografar mensagem
+        document.getElementById('encrypt-message').addEventListener('click', () => {
+            const message = document.getElementById('message').value;
+            if (!message) {
+                alert('Digite uma mensagem para criptografar!');
+                return;
+            }
+            
+            fetch(`${replitURL}/api/encrypt`, { // Usando o URL do Replit para criptografia
+                method: 'POST',
+                headers: {
+                    'x-api-key': apiKey,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ message })
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('encrypted-result').textContent = `Mensagem Criptografada: ${data.encryptedMessage}`;
+            })
+            .catch(error => alert('Erro ao criptografar mensagem: ' + error.message));
+        });
+
+        // Função para descriptografar mensagem
+        document.getElementById('decrypt-message').addEventListener('click', () => {
+            const encryptedMessage = document.getElementById('encrypted-message').value;
+            if (!encryptedMessage) {
+                alert('Digite uma mensagem criptografada para descriptografar!');
+                return;
+            }
+            
+            fetch(`${replitURL}/api/decrypt`, { // Usando o URL do Replit para descriptografia
+                method: 'POST',
+                headers: {
+                    'x-api-key': apiKey,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ encryptedMessage })
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('decrypted-result').textContent = `Mensagem Descriptografada: ${data.decryptedMessage}`;
+            })
+            .catch(error => alert('Erro ao descriptografar mensagem: ' + error.message));
+        });
+    </script>
+</body>
 </html>
